@@ -44,10 +44,13 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
     //kakao map
     implementation("com.kakao.maps.open:android:2.11.9")
+
+    implementation("com.google.android.gms:play-services-location:21.0.1")
 }
