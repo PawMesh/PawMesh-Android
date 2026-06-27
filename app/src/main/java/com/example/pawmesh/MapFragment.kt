@@ -2,34 +2,40 @@ package com.example.pawmesh
 
 import android.annotation.SuppressLint
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresPermission
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.example.pawmesh.data.network.dto.request.CreateMapSessionRequestDto
+import com.example.pawmesh.data.network.dto.request.LocationUpdateRequestDto
+import com.example.pawmesh.data.network.dto.response.NearbySessionDto
+import com.example.pawmesh.data.network.retrofit.RetrofitClient
 import com.example.pawmesh.databinding.FragmentMapBinding
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
+import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.MapView
-import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
+import kotlinx.coroutines.launch
 
 class MapFragment : Fragment() {
     private var _binding: FragmentMapBinding? = null
@@ -38,13 +44,14 @@ class MapFragment : Fragment() {
     private var kakaoMap: KakaoMap? = null
 
     // GPS
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var myLat = 0.0
     private var myLng = 0.0
 
     // 상태
     private var isFindingFriend = false
-    private var walkId: Int? = null
+    private var walkId: Long? = null
+
+    private var mapStarted = false
 
     // 폴링
     private val handler = Handler(Looper.getMainLooper())
@@ -52,21 +59,17 @@ class MapFragment : Fragment() {
         override fun run() {
             updateMyLocation()
             fetchNearbyDogs()
-            handler.postDelayed(this, 10_000L) // 10초마다
+            handler.postDelayed(this, 10_000L)
         }
     }
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-        val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
-        val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
-
-        // 둘 중 하나라도 허용되었다면 진행
-        if (fineGranted || coarseGranted) {
-            if (isFindingFriend) {
-                updateMyLocationAndStartWalk()
-            }
+        val granted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        if (granted) {
+            if (isFindingFriend) updateMyLocationAndStartWalk()
         } else {
             Toast.makeText(requireContext(), "위치 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
             isFindingFriend = false
@@ -76,28 +79,45 @@ class MapFragment : Fragment() {
 
     companion object {
         fun newInstance() = MapFragment()
+        private const val TAG = "MapFragment"
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        Log.d(TAG, "onAttach")
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d(TAG, "onCreate")
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        Log.d(TAG, "onCreateView")
         _binding = FragmentMapBinding.inflate(inflater, container, false)
+        Log.d(TAG, "binding inflated: root=${binding.root}")
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-
+        Log.d(TAG, "onViewCreated: view=$view")
         setupToggle()
         setupMap()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "onStart")
     }
 
     // ── 토글 UI ──────────────────────────────────────────
 
     private fun setupToggle() {
+        Log.d(TAG, "setupToggle")
         binding.btnFindFriend.setOnClickListener {
             if (!isFindingFriend) activateFindFriend()
         }
@@ -110,8 +130,14 @@ class MapFragment : Fragment() {
         isFindingFriend = true
         updateToggleUI()
 
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED) {
+        val hasFine = ContextCompat.checkSelfPermission(
+            requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        val hasCoarse = ContextCompat.checkSelfPermission(
+            requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (hasFine || hasCoarse) {
             updateMyLocationAndStartWalk()
         } else {
             requestPermissionLauncher.launch(
@@ -121,6 +147,14 @@ class MapFragment : Fragment() {
                 )
             )
         }
+    }
+
+    private fun activateAloneWalk() {
+        isFindingFriend = false
+        updateToggleUI()
+        handler.removeCallbacks(locationRunnable)
+        endWalk()
+        clearFriendMarkers()
     }
 
     private fun updateToggleUI() {
@@ -137,65 +171,77 @@ class MapFragment : Fragment() {
         }
     }
 
-    @SuppressLint("MissingPermission")
-    private fun updateMyLocationAndStartWalk() {
-        getMyLocation { lat, lng ->
-            myLat = lat; myLng = lng
-            startWalk(lat, lng)
-        }
-    }
-
-    private fun activateAloneWalk() {
-        isFindingFriend = false
-        updateToggleUI()
-
-        // 폴링 중단 + 산책 종료 API + 친구 마커 제거
-        handler.removeCallbacks(locationRunnable)
-        endWalk()
-        clearFriendMarkers()
-    }
-
     // ── 지도 ──────────────────────────────────────────
 
     private fun setupMap() {
+        Log.d(TAG, "setupMap")
         mapView = binding.mapView
-        mapView.start(object : MapLifeCycleCallback() {
-            override fun onMapDestroy() { mapView.pause() }
-            override fun onMapError(e: Exception) { e.printStackTrace() }
-        }, object : KakaoMapReadyCallback() {
-            override fun onMapReady(map: KakaoMap) {
-                kakaoMap = map
-                addMyMarker()
-            }
-        })
+        try {
+            mapView.start(object : MapLifeCycleCallback() {
+                override fun onMapDestroy() {
+                    Log.d(TAG, "onMapDestroy")
+                }
+                override fun onMapError(e: Exception) {
+                    Log.e(TAG, "onMapError: ${e.message}", e)
+                }
+            }, object : KakaoMapReadyCallback() {
+                override fun onMapReady(map: KakaoMap) {
+                    Log.d(TAG, "onMapReady")
+                    kakaoMap = map
+                    mapStarted = true
+                    addMyMarker()
+                    map.setOnLabelClickListener { _, _, label ->
+                        val s = sessionMap[label.labelId]
+                        if (s != null) {
+                            parentFragmentManager.beginTransaction()
+                                .replace(R.id.fragmentContainer, WalkRequestFragment.newInstance(s))
+                                .addToBackStack(null)
+                                .commit()
+                        }
+                        true
+                    }
+                }
+            })
+        } catch (e: Exception) {
+            Log.e(TAG, "mapView.start() failed", e)
+        }
     }
 
     private fun addMyMarker() {
-        val map = kakaoMap ?: return
-        val layer = map.labelManager?.layer ?: return
+        Log.d(TAG, "addMyMarker: kakaoMap=$kakaoMap")
+        val map = kakaoMap ?: run { Log.e(TAG, "addMyMarker: kakaoMap is null"); return }
+        val layer = map.labelManager?.layer ?: run { Log.e(TAG, "addMyMarker: labelManager or layer is null"); return }
+        Log.d(TAG, "addMyMarker: layer=$layer")
         val bitmap = viewToBitmap(R.layout.marker_my_dog)
+        Log.d(TAG, "addMyMarker: bitmap=${bitmap.width}x${bitmap.height}")
         val styles = map.labelManager!!.addLabelStyles(LabelStyles.from(LabelStyle.from(bitmap)))
         val lat = if (myLat != 0.0) myLat else 37.5665
         val lng = if (myLng != 0.0) myLng else 126.9780
+        Log.d(TAG, "addMyMarker: lat=$lat, lng=$lng")
         layer.addLabel(LabelOptions.from("my_dog", LatLng.from(lat, lng)).setStyles(styles))
+        Log.d(TAG, "addMyMarker: label added")
     }
 
     // 친구 마커 관리
     private val friendLabelIds = mutableListOf<String>()
+    private val sessionMap = mutableMapOf<String, NearbySessionDto>()
 
-    private fun addFriendMarkers(dogs: List<NearbyDog>) {
+    private fun addFriendMarkers(sessions: List<NearbySessionDto>) {
         val map = kakaoMap ?: return
         val layer = map.labelManager?.layer ?: return
         clearFriendMarkers()
 
-        dogs.forEach { dog ->
+        Log.d(TAG, "addFriendMarkers: ${sessions.size}개")
+        sessions.forEach { session ->
+            val lat = session.lat ?: return@forEach
+            val lng = session.lng ?: return@forEach
             val bitmap = viewToBitmap(R.layout.marker_friend_dog)
             val styles = map.labelManager!!.addLabelStyles(LabelStyles.from(LabelStyle.from(bitmap)))
-            val labelId = "friend_${dog.dogId}"
-            layer.addLabel(
-                LabelOptions.from(labelId, LatLng.from(dog.latitude, dog.longitude)).setStyles(styles)
-            )
+            val labelId = "friend_${session.dogId}"
+            layer.addLabel(LabelOptions.from(labelId, LatLng.from(lat, lng)).setStyles(styles))
             friendLabelIds.add(labelId)
+            sessionMap[labelId] = session
+            Log.d(TAG, "친구 마커 추가: $labelId lat=$lat lng=$lng")
         }
     }
 
@@ -204,57 +250,111 @@ class MapFragment : Fragment() {
         friendLabelIds.forEach { id ->
             val label = layer.getLabel(id)
             label?.let { layer.remove(it) }
-            }
-            friendLabelIds.clear()
+        }
+        friendLabelIds.clear()
+        sessionMap.clear()
     }
 
     // ── GPS ──────────────────────────────────────────
 
-    @RequiresPermission(anyOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
-    private fun getMyLocation(onResult: (Double, Double) -> Unit) {
-        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            location?.let { onResult(it.latitude, it.longitude) }
+    @SuppressLint("MissingPermission")
+    private fun getLocation(): Pair<Double, Double>? {
+        val lm = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return try {
+            val loc = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                ?: lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+            loc?.let { it.latitude to it.longitude }
+        } catch (_: SecurityException) {
+            null
         }
     }
 
-    @SuppressLint("MissingPermission")
+    private fun updateMyLocationAndStartWalk() {
+        getLocation()?.let { (lat, lng) ->
+            myLat = lat
+            myLng = lng
+            startWalk(lat, lng)
+        }
+    }
+
     private fun updateMyLocation() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED) {
-            getMyLocation { lat, lng ->
-                myLat = lat; myLng = lng
-                walkId?.let { id -> patchLocation(id, lat, lng) }
-            }
+        getLocation()?.let { (lat, lng) ->
+            myLat = lat
+            myLng = lng
+            walkId?.let { id -> patchLocation(id, lat, lng) }
         }
     }
 
     // ── API 호출 ──────────────────────────────────────────
 
-    private fun startWalk(lat: Double, lng: Double) {
-        // TODO: Retrofit - POST /walk/start
-        // body: { dogId, latitude, longitude }
-        // response: { walkId }
-        // walkId = response.walkId
-        handler.post(locationRunnable) // 폴링 시작
+    private fun token(): String {
+        val prefs = requireContext().getSharedPreferences("pawmesh_prefs", Context.MODE_PRIVATE)
+        return "Bearer ${prefs.getString("access_token", "")}"
     }
 
-    private fun patchLocation(walkId: Int, lat: Double, lng: Double) {
-        // TODO: Retrofit - PATCH /walk/location
-        // body: { walkId, latitude, longitude }
+    private fun startWalk(lat: Double, lng: Double) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val prefs = requireContext().getSharedPreferences("pawmesh_prefs", Context.MODE_PRIVATE)
+                val dogId = prefs.getInt("dog_id", 1)
+                val resp = RetrofitClient.mapApi.createMapSession(
+                    token(),
+                    CreateMapSessionRequestDto(dogId, lat, lng)
+                )
+                if (resp.isSuccessful) {
+                    walkId = resp.body()?.data?.walkSessionId?.toLong()
+                    Log.d(TAG, "세션 생성 완료: walkId=$walkId")
+                    handler.post(locationRunnable)
+                } else {
+                    Log.w(TAG, "세션 생성 실패: ${resp.code()}")
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "세션 생성 오류", e)
+            }
+        }
+    }
+
+    private fun patchLocation(sessionId: Long, lat: Double, lng: Double) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val resp = RetrofitClient.mapApi.updateLocation(
+                    token(),
+                    sessionId,
+                    LocationUpdateRequestDto(lat, lng)
+                )
+                if (!resp.isSuccessful) Log.w(TAG, "위치 업데이트 실패: ${resp.code()}")
+            } catch (e: Exception) {
+                Log.e(TAG, "위치 업데이트 오류", e)
+            }
+        }
     }
 
     private fun fetchNearbyDogs() {
         if (!isFindingFriend) return
-        // TODO: Retrofit - GET /dogs/nearby?latitude=&longitude=&radius=1000
-        // response: List<NearbyDog>
-        // addFriendMarkers(response)
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val resp = RetrofitClient.mapApi.getNearbySessions(token(), myLat, myLng)
+                if (resp.isSuccessful) {
+                    addFriendMarkers(resp.body()?.data ?: emptyList())
+                } else {
+                    Log.w(TAG, "주변 세션 조회 실패: ${resp.code()}")
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "주변 세션 조회 오류", e)
+            }
+        }
     }
 
     private fun endWalk() {
-        walkId?.let {
-            // TODO: Retrofit - POST /walk/end
-            // body: { walkId }
-            walkId = null
+        val id = walkId ?: return
+        walkId = null
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val resp = RetrofitClient.mapApi.deleteMapSession(token(), id)
+                if (!resp.isSuccessful) Log.w(TAG, "세션 종료 실패: ${resp.code()}")
+            } catch (e: Exception) {
+                Log.e(TAG, "세션 종료 오류", e)
+            }
         }
     }
 
@@ -262,17 +362,20 @@ class MapFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (::mapView.isInitialized) mapView.resume()
+        Log.d(TAG, "onResume: mapStarted=$mapStarted")
+        if (mapStarted) mapView.resume()
     }
 
     override fun onPause() {
-        super.onPause()
-        if (::mapView.isInitialized) mapView.pause()
+        Log.d(TAG, "onPause")
+        if (mapStarted) mapView.pause()
         handler.removeCallbacks(locationRunnable)
+        super.onPause()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        Log.d(TAG, "onDestroyView")
         _binding = null
     }
 
@@ -289,11 +392,4 @@ class MapFragment : Fragment() {
         Canvas(bitmap).also { view.draw(it) }
         return bitmap
     }
-
-    data class NearbyDog(
-        val dogId: Int,
-        val name: String,
-        val latitude: Double,
-        val longitude: Double
-    )
 }

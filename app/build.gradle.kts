@@ -64,3 +64,4 @@ dependencies {
     // Glide (이미지 로딩)
     implementation("com.github.bumptech.glide:glide:4.16.0")
 }
+}

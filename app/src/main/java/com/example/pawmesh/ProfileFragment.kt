@@ -34,8 +34,10 @@ class ProfileFragment : Fragment() {
         bindStats(walkCount = 0, friendCount = 0)
 
         view.findViewById<View>(R.id.btnEditProfile).setOnClickListener {
+            // TODO: 프로필 수정 화면으로 이동
             startActivity(Intent(requireContext(), EditDogProfileActivity::class.java))
         }
+
 
         view.findViewById<TextView>(R.id.tvOwnerProfile).setOnClickListener {
             // TODO: 보호자 프로필 화면으로 이동
