@@ -1,14 +1,8 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:maxHeight="50dp"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
-
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:paddingBottom="16dp">
 
@@ -123,51 +117,51 @@
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipFriendly"
                         style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:backgroundTint="#EFF6FF"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:backgroundTint="#EFF6FF"
                         android:text="친화적" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipPlayful"
                         style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:backgroundTint="#EFF6FF"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:backgroundTint="#EFF6FF"
                         android:text="활발함" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipGentle"
                         style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:backgroundTint="#EFF6FF"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:backgroundTint="#EFF6FF"
                         android:text="온순함" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipCurious"
                         style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:backgroundTint="#EFF6FF"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:backgroundTint="#EFF6FF"
                         android:text="낯가림" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipProtective"
                         style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:backgroundTint="#EFF6FF"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:backgroundTint="#EFF6FF"
                         android:text="경계심" />
 
                     <Button
                         android:id="@+id/tvBr"
                         style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:backgroundTint="#3384FC"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:backgroundTint="#3384FC"
                         android:text="+추가"
-                        android:textColor="@color/white"/>
+                        android:textColor="@color/white" />
 
                 </com.google.android.material.chip.ChipGroup>
 
@@ -211,8 +205,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:background="#33FFFFFF"
-                    android:maxLines="2"
                     android:ellipsize="end"
+                    android:maxLines="2"
                     android:paddingStart="12dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="12dp"
@@ -254,5 +248,3 @@
         </LinearLayout>
 
     </LinearLayout>
-
-</ScrollView>
