@@ -5,11 +5,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.pawmesh.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     val TAG = "MainActivity"
-    val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    val binding by lazy {ActivityMainBinding.inflate}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +22,5 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        binding.bottomNavigationView.setOni
     }
 }
