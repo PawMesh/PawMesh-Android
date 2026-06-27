@@ -3,6 +3,7 @@ package com.example.pawmesh
 import android.annotation.SuppressLint
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -191,12 +192,8 @@ class MapFragment : Fragment() {
                     mapStarted = true
                     addMyMarker()
                     map.setOnLabelClickListener { _, _, label ->
-                        val s = sessionMap[label.labelId]
-                        if (s != null) {
-                            parentFragmentManager.beginTransaction()
-                                .replace(R.id.fragmentContainer, WalkRequestFragment.newInstance(s))
-                                .addToBackStack(null)
-                                .commit()
+                        if (sessionMap.containsKey(label.labelId) || label.labelId == "test_pin") {
+                            startActivity(Intent(requireContext(), WalkCompleteActivity::class.java))
                         }
                         true
                     }
@@ -225,24 +222,26 @@ class MapFragment : Fragment() {
     // 친구 마커 관리
     private val friendLabelIds = mutableListOf<String>()
     private val sessionMap = mutableMapOf<String, NearbySessionDto>()
-
-    private fun addFriendMarkers(sessions: List<NearbySessionDto>) {
+    private fun addTestPin() {
         val map = kakaoMap ?: return
         val layer = map.labelManager?.layer ?: return
-        clearFriendMarkers()
 
-        Log.d(TAG, "addFriendMarkers: ${sessions.size}개")
-        sessions.forEach { session ->
-            val lat = session.lat ?: return@forEach
-            val lng = session.lng ?: return@forEach
-            val bitmap = viewToBitmap(R.layout.marker_friend_dog)
-            val styles = map.labelManager!!.addLabelStyles(LabelStyles.from(LabelStyle.from(bitmap)))
-            val labelId = "friend_${session.dogId}"
-            layer.addLabel(LabelOptions.from(labelId, LatLng.from(lat, lng)).setStyles(styles))
-            friendLabelIds.add(labelId)
-            sessionMap[labelId] = session
-            Log.d(TAG, "친구 마커 추가: $labelId lat=$lat lng=$lng")
-        }
+        val latLng = LatLng.from(37.1112, 126.9780) // 서울시청 근처 친구 개 (무조건 보이는 위치)
+
+        val bitmap = viewToBitmap(R.layout.marker_friend_dog)
+
+        Log.d(TAG, "pin bitmap = ${bitmap.width}x${bitmap.height}")
+
+        val styles = map.labelManager!!.addLabelStyles(
+            LabelStyles.from(LabelStyle.from(bitmap))
+        )
+
+        layer.addLabel(
+            LabelOptions.from("test_pin", latLng)
+                .setStyles(styles)
+        )
+
+        Log.d(TAG, "pin added")
     }
 
     private fun clearFriendMarkers() {
@@ -335,7 +334,7 @@ class MapFragment : Fragment() {
             try {
                 val resp = RetrofitClient.mapApi.getNearbySessions(token(), myLat, myLng)
                 if (resp.isSuccessful) {
-                    addFriendMarkers(resp.body()?.data ?: emptyList())
+                    addTestPin()
                 } else {
                     Log.w(TAG, "주변 세션 조회 실패: ${resp.code()}")
                 }
