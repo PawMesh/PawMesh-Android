@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/Tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="57dp"
+        android:layout_marginEnd="286dp"
+        android:layout_marginBottom="653dp"
+        android:text="사진 업로드"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="강아지 사진으로 멋진 캐릭터 프로필을 만들어 드릴게요."
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Tv"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+    <!-- 이미지 선택 박스 -->
+
+    <!-- 안내 텍스트 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="-206dp"
+        tools:layout_editor_absoluteY="-258dp">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardImage"
+            android:layout_width="280dp"
+            android:layout_height="280dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/textGuide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="사진을 선택하면 AI가 캐릭터로 바꿔줘요"
+                android:textSize="14sp" />
+        </androidx.cardview.widget.CardView>
+
+        <Button
+            android:id="@+id/btnSelect"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="24dp"
+            android:layout_marginStart="140dp"
+            android:layout_marginEnd="257dp"
+            android:backgroundTint="#3384FC"
+            android:text="사진 선택하기"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardImage" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- 선택 버튼 -->
+
+</androidx.constraintlayout.widget.ConstraintLayout>
