@@ -57,11 +57,14 @@ class MapFragment : Fragment() {
     }
 
     private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+        val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
+
+        // 둘 중 하나라도 허용되었다면 진행
+        if (fineGranted || coarseGranted) {
             if (isFindingFriend) {
-                // 권한 허용 시 위치 업데이트 및 산책 시작
                 updateMyLocationAndStartWalk()
             }
         } else {
@@ -111,7 +114,12 @@ class MapFragment : Fragment() {
             == PackageManager.PERMISSION_GRANTED) {
             updateMyLocationAndStartWalk()
         } else {
-            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            requestPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
         }
     }
 
