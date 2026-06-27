@@ -89,8 +89,10 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private suspend fun pollUntilComplete(signupToken: String, jobId: String): AiPhotoResultDataDto? {
-        repeat(200) { attempt ->
-            delay(3000)
+        delay(10_000) // AI 처리 시작 대기
+        var failedCount = 0
+
+        repeat(60) { attempt ->
             val resultResponse = RetrofitClient.authApi.getAiPhotoResult(signupToken, jobId)
             val result = resultResponse.body()?.data
             Log.d(TAG, "3-3. 폴링 ${attempt + 1}회 | status=${result?.status}")
@@ -101,10 +103,15 @@ class SplashActivity : AppCompatActivity() {
                     return result
                 }
                 "FAILED" -> {
-                    Log.e(TAG, "3-3. AI 생성 실패")
-                    return null
+                    failedCount++
+                    Log.w(TAG, "3-3. FAILED ${failedCount}회")
+                    if (failedCount >= 5) {
+                        Log.e(TAG, "3-3. FAILED 5회 연속 → 중단")
+                        return null
+                    }
                 }
             }
+            delay(5_000)
         }
         Log.w(TAG, "3-3. 폴링 타임아웃")
         return null
