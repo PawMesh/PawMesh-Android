@@ -1,80 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F0F4FF">
 
-    <!-- 프로필 이미지 -->
-    <FrameLayout
-        android:id="@+id/profileImageContainer"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="48dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@null"
-            app:srcCompat="@drawable/cc"/>
-
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@null"
-            app:srcCompat="@drawable/profile"/>
-    </FrameLayout>
-
-    <!-- 제목 -->
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="덕배를 소개합니다!"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#1A1A1A"
-        app:layout_constraintTop_toBottomOf="@id/profileImageContainer"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:orientation="vertical"
+        android:paddingBottom="16dp">
 
-    <!-- 부제목 -->
-    <TextView
-        android:id="@+id/textView9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="AI 캐릭터가 생성되었습니다"
-        android:textSize="14sp"
-        android:textColor="#888888"
-        app:layout_constraintTop_toBottomOf="@id/textView8"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        <!-- 프로필 이미지 -->
+        <FrameLayout
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp">
 
-    <!-- 카드 -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="0dp"
-        app:cardBackgroundColor="#FFFFFF"
-        app:layout_constraintTop_toBottomOf="@id/textView9"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
+                app:srcCompat="@drawable/cc" />
 
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
+                app:srcCompat="@drawable/profile" />
+        </FrameLayout>
+
+        <!-- 제목 -->
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:text="덕배를 소개합니다!"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#1A1A1A" />
+
+        <!-- 부제목 -->
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:text="AI 캐릭터가 생성되었습니다"
+            android:textSize="14sp"
+            android:textColor="#888888" />
+
+        <!-- 카드 영역 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="16dp"
+            android:background="#FFFFFF"
             android:orientation="vertical"
             android:padding="20dp">
 
@@ -85,7 +74,7 @@
                 android:text="견종"
                 android:textSize="13sp"
                 android:textStyle="bold"
-                android:textColor="#1A1A1A"/>
+                android:textColor="#1A1A1A" />
 
             <EditText
                 android:id="@+id/etBreed"
@@ -97,7 +86,7 @@
                 android:inputType="text"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
-                android:textSize="13sp"/>
+                android:textSize="13sp" />
 
             <!-- 성격 -->
             <TextView
@@ -107,61 +96,14 @@
                 android:text="성격"
                 android:textSize="13sp"
                 android:textStyle="bold"
-                android:textColor="#1A1A1A"/>
+                android:textColor="#1A1A1A" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chipGroupPersonality"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                app:singleSelection="false">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipFriendly"
-                    style="@style/Widget.MaterialComponents.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="친화적"
-                    app:chipBackgroundColor="@color/chip_background_color"/>
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipPlayful"
-                    style="@style/Widget.MaterialComponents.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="활발함"
-                    app:chipBackgroundColor="@color/chip_background_color"/>
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipGentle"
-                    style="@style/Widget.MaterialComponents.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="온순함"
-                    app:chipBackgroundColor="@color/chip_background_color"/>
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipCurious"
-                    style="@style/Widget.MaterialComponents.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="낯가림"
-                    app:chipBackgroundColor="@color/chip_background_color"/>
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipProtective"
-                    style="@style/Widget.MaterialComponents.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="경계심"
-                    app:chipBackgroundColor="@color/chip_background_color"/>
-
-            </com.google.android.material.chip.ChipGroup>
+                app:singleSelection="false" />
 
             <!-- 주의사항 -->
             <TextView
@@ -171,7 +113,7 @@
                 android:text="주의사항"
                 android:textSize="13sp"
                 android:textStyle="bold"
-                android:textColor="#1A1A1A"/>
+                android:textColor="#1A1A1A" />
 
             <EditText
                 android:id="@+id/etCaution"
@@ -185,7 +127,7 @@
                 android:paddingStart="12dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="12dp"
-                android:textSize="13sp"/>
+                android:textSize="13sp" />
 
             <!-- AI 소개글 -->
             <TextView
@@ -195,7 +137,7 @@
                 android:text="AI 소개글"
                 android:textSize="13sp"
                 android:textStyle="bold"
-                android:textColor="#1A1A1A"/>
+                android:textColor="#1A1A1A" />
 
             <TextView
                 android:id="@+id/tvAiIntro"
@@ -209,45 +151,41 @@
                 android:paddingEnd="12dp"
                 android:paddingBottom="8dp"
                 android:text="AI가 생성한 소개글이 여기에 표시됩니다."
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
 
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
 
-    <!-- 버튼 영역 -->
-    <LinearLayout
-        android:id="@+id/btnContainer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="32dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/card"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <Button
-            android:id="@+id/btnSelect2"
-            android:layout_width="0dp"
+        <!-- 버튼 영역 -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:backgroundTint="#EFF6FF"
-            android:text="사진 다시 선택하기"
-            android:textColor="#1E3A8A"/>
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="32dp"
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btnSelect1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:backgroundTint="#3384FC"
-            android:text="사진 선택하기"
-            android:textColor="#FFFFFF"/>
+            <Button
+                android:id="@+id/btnSelect2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:backgroundTint="#EFF6FF"
+                android:text="사진 다시 선택하기"
+                android:textColor="#1E3A8A" />
+
+            <Button
+                android:id="@+id/btnSelect1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:backgroundTint="#3384FC"
+                android:text="완벽해요!"
+                android:textColor="#FFFFFF" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

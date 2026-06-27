@@ -53,7 +53,6 @@
             android:text="혼자 산책 중"
             android:textColor="#999999"
             android:textSize="14sp" />
-
     </LinearLayout>
 
 

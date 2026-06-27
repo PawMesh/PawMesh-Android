@@ -51,6 +51,8 @@ dependencies {
     //kakao map
     implementation("com.kakao.maps.open:android:2.11.9")
 
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
     // Retrofit + OkHttp
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
@@ -59,6 +61,6 @@ dependencies {
     // 코루틴
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
-    // 이미지 로딩
-    implementation("io.coil-kt:coil:2.6.0")
+    // Glide (이미지 로딩)
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 }
