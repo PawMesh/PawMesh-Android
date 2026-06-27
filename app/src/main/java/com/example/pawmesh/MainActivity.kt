@@ -1,51 +1,41 @@
 package com.example.pawmesh
 
-import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import com.example.pawmesh.adapter.NotificationType
-import com.example.pawmesh.adapter.WalkNotification
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val today = SimpleDateFormat("M월 d일 EEEE", Locale.KOREAN).format(Date())
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNav.itemActiveIndicatorColor = ColorStateList.valueOf(Color.parseColor("#DBEAFE"))
 
-        findViewById<Button>(R.id.btnTestWalkComplete).setOnClickListener {
-            startActivity(Intent(this, WalkCompleteActivity::class.java).apply {
-                putExtra(WalkCompleteActivity.EXTRA_MY_DOG_NAME, "두부")
-                putExtra(WalkCompleteActivity.EXTRA_DOG_NAME, "보리")
-                putExtra(WalkCompleteActivity.EXTRA_WALK_COUNT, 1)
-                putExtra(WalkCompleteActivity.EXTRA_TIME, "45분")
-                putExtra(WalkCompleteActivity.EXTRA_DISTANCE, "2.3km")
-                putExtra(WalkCompleteActivity.EXTRA_CALORIE, "185kcal")
-                putExtra(WalkCompleteActivity.EXTRA_DATE, today)
-            })
+        if (savedInstanceState == null) {
+            showFragment(MapFragment.newInstance())
         }
 
-        findViewById<Button>(R.id.btnTestFriendComplete).setOnClickListener {
-            startActivity(Intent(this, FriendCompleteActivity::class.java).apply {
-                putExtra(FriendCompleteActivity.EXTRA_DOG_NAME, "보리")
-                putExtra(FriendCompleteActivity.EXTRA_WALK_COUNT, 1)
-                putExtra(FriendCompleteActivity.EXTRA_LEVEL, 2)
-                putExtra(FriendCompleteActivity.EXTRA_PROGRESS, 30)
-                putExtra(FriendCompleteActivity.EXTRA_LEVEL_START_LABEL, "첫인사")
-                putExtra(FriendCompleteActivity.EXTRA_LEVEL_END_LABEL, "산책 친구")
-            })
+        bottomNav.setOnItemSelectedListener { item ->
+            val fragment = when (item.itemId) {
+                R.id.navigation_map -> MapFragment.newInstance()
+                R.id.navigation_friends -> FriendsFragment.newInstance()
+                R.id.navigation_notifications -> NotificationsFragment.newInstance()
+                R.id.navigation_profile -> ProfileFragment.newInstance()
+                else -> return@setOnItemSelectedListener false
+            }
+            showFragment(fragment)
+            true
         }
+    }
 
-        findViewById<Button>(R.id.btnTestFriendList).setOnClickListener {
-            startActivity(Intent(this, FriendListActivity::class.java))
-        }
-
-        findViewById<Button>(R.id.btnTestNotification).setOnClickListener {
-            startActivity(Intent(this, NotificationActivity::class.java))
-        }
+    private fun showFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment)
+            .commit()
     }
 }
