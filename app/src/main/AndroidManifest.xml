@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,20 +17,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PawMesh">
 
+
         <!-- 카카오맵 API 키 추가 -->
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="247cb7d9cc222265ce4b4d11a6b410f1" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".StartActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".PictureActivity"/>
+        <activity android:name=".UploadActivity"/>
+        <activity android:name=".SplashActivity"/>
+        <activity android:name=".MainActivity"/>
         <activity android:name=".WalkCompleteActivity"/>
         <activity android:name=".FriendCompleteActivity"/>
         <activity android:name=".FriendListActivity"/>
