@@ -33,7 +33,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    viewBinding.enable = true
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -45,4 +47,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    //kakao map
+    implementation("com.kakao.maps.open:android:2.11.9")
 }
