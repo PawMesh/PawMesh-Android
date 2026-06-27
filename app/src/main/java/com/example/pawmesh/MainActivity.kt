@@ -5,22 +5,24 @@ import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.pawmesh.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
+    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(binding.root)
 
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-        bottomNav.itemActiveIndicatorColor = ColorStateList.valueOf(Color.parseColor("#DBEAFE"))
+        binding.bottomNavigationView.itemActiveIndicatorColor =
+            ColorStateList.valueOf(Color.parseColor("#DBEAFE"))
 
         if (savedInstanceState == null) {
             showFragment(MapFragment.newInstance())
         }
 
-        bottomNav.setOnItemSelectedListener { item ->
+        binding.bottomNavigationView.setOnItemSelectedListener { item ->
             val fragment = when (item.itemId) {
                 R.id.navigation_map -> MapFragment.newInstance()
                 R.id.navigation_friends -> FriendsFragment.newInstance()

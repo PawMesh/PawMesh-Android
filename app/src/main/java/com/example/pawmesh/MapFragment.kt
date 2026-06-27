@@ -23,6 +23,10 @@ class MapFragment : Fragment() {
 
     private lateinit var mapView: MapView
 
+    companion object {
+        fun newInstance() = MapFragment()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
