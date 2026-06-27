@@ -44,6 +44,7 @@
         <activity android:name=".FriendCompleteActivity"/>
         <activity android:name=".FriendListActivity"/>
         <activity android:name=".NotificationActivity"/>
+        <activity android:name=".EditDogProfileActivity"/>
     </application>
 
 </manifest>

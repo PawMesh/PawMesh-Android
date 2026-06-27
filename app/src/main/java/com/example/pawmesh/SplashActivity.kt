@@ -104,11 +104,18 @@ class SplashActivity : AppCompatActivity() {
                 }
                 "FAILED" -> {
                     failedCount++
-                    Log.w(TAG, "3-3. FAILED ${failedCount}회")
+                    val rawBody = resultResponse.body()?.toString()
+                    val errorBody = resultResponse.errorBody()?.string()
+                    Log.e(TAG, "3-3. FAILED ${failedCount}회 | HTTP=${resultResponse.code()} | body=$rawBody | error=$errorBody")
                     if (failedCount >= 5) {
                         Log.e(TAG, "3-3. FAILED 5회 연속 → 중단")
                         return null
                     }
+                }
+                null -> {
+                    val rawBody = resultResponse.body()?.toString()
+                    val errorBody = resultResponse.errorBody()?.string()
+                    Log.e(TAG, "3-3. status null | HTTP=${resultResponse.code()} | body=$rawBody | error=$errorBody")
                 }
             }
             delay(5_000)
