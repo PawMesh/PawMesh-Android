@@ -78,6 +78,7 @@
             app:layout_constraintStart_toEndOf="@id/imgDogCircle"
             app:layout_constraintEnd_toEndOf="parent"/>
 
+
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chipGroupPersonality"
             android:layout_width="0dp"
@@ -85,7 +86,25 @@
             android:layout_marginTop="12dp"
             app:layout_constraintTop_toBottomOf="@id/imgDogCircle"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipGentle"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#EFF6FF"
+                android:text="온순함" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipCurious"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#EFF6FF"
+                android:text="호기심많음" />
+
+        </com.google.android.material.chip.ChipGroup>
 
         <Button
             android:id="@+id/btnEditProfile"
@@ -101,6 +120,7 @@
             app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutStats"
