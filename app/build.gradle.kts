@@ -58,4 +58,7 @@ dependencies {
 
     // 코루틴
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    // 이미지 로딩
+    implementation("io.coil-kt:coil:2.6.0")
 }
