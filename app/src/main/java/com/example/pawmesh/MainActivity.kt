@@ -19,7 +19,9 @@ class MainActivity : AppCompatActivity() {
             ColorStateList.valueOf(Color.parseColor("#DBEAFE"))
 
         if (savedInstanceState == null) {
-            showFragment(MapFragment.newInstance())
+            // TODO: 에뮬레이터 테스트용 - 실제 배포 시 MapFragment.newInstance()로 교체
+            showFragment(FriendsFragment.newInstance())
+            // showFragment(MapFragment.newInstance()) // 실제 코드
         }
 
         binding.bottomNavigationView.setOnItemSelectedListener { item ->

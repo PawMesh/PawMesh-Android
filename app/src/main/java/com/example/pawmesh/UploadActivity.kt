@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -46,13 +47,15 @@ class UploadActivity : AppCompatActivity() {
 
         binding.btnSelect1.setOnClickListener {
             val uri = currentUri ?: run {
-                Log.w("PawMesh_Photo", "2. 사진 미선택 상태로 버튼 클릭")
+                Toast.makeText(this, "사진을 선택해주세요.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             val dogName = binding.sampleEditText.text.toString().trim()
-                .takeIf { it.isNotEmpty() && it != "이름을 입력하세요" } ?: ""
+            if (dogName.isEmpty()) {
+                Toast.makeText(this, "강아지 이름을 입력해주세요.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             Log.d("PawMesh_Photo", "2. UploadActivity → SplashActivity | uri=$uri, dogName=$dogName")
-
             val intent = Intent(this, SplashActivity::class.java).apply {
                 putExtra("photo_uri", uri.toString())
                 putExtra("dog_name", dogName)

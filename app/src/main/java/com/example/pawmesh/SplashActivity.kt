@@ -4,10 +4,10 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.pawmesh.data.network.dto.request.AiPhotoRequestDto
-import com.google.gson.Gson
 import com.example.pawmesh.data.network.dto.response.AiPhotoResultDataDto
 import com.example.pawmesh.data.network.retrofit.RetrofitClient
 import com.example.pawmesh.databinding.PictureSplashBinding
@@ -32,8 +32,8 @@ class SplashActivity : AppCompatActivity() {
         val dogName = intent.getStringExtra("dog_name") ?: ""
 
         if (photoUri == null) {
-            Log.e(TAG, "3. SplashActivity - photo_uri 없음, AiProfitActivity로 이동")
-            navigateToAiProfit(null)
+            Log.e(TAG, "3. SplashActivity - photo_uri 없음")
+            showErrorAndFinish()
             return
         }
 
@@ -46,17 +46,16 @@ class SplashActivity : AppCompatActivity() {
 
                 if (imagePart == null) {
                     Log.e(TAG, "3-1. 이미지 변환 실패")
-                    navigateToAiProfit(null)
+                    showErrorAndFinish()
                     return@launch
                 }
 
                 val uploadResponse = RetrofitClient.authApi.uploadPetImage(imagePart)
                 Log.d(TAG, "3-1. 업로드 응답 코드: ${uploadResponse.code()}, body: ${uploadResponse.body()}")
-                Log.d("RAW", "upload: ${Gson().toJson(uploadResponse.body())}")
 
                 val signupToken = uploadResponse.body()?.data?.signupToken ?: run {
                     Log.e(TAG, "3-1. signupToken 없음")
-                    navigateToAiProfit(null)
+                    showErrorAndFinish()
                     return@launch
                 }
 
@@ -66,48 +65,57 @@ class SplashActivity : AppCompatActivity() {
                     body = AiPhotoRequestDto(petName = dogName)
                 )
                 Log.d(TAG, "3-2. AI 요청 응답 코드: ${aiResponse.code()}, body: ${aiResponse.body()}")
-                Log.d("RAW", "aiRequest: ${Gson().toJson(aiResponse.body())}")
 
                 val jobId = aiResponse.body()?.data?.jobId ?: run {
                     Log.e(TAG, "3-2. jobId 없음")
-                    navigateToAiProfit(null)
+                    showErrorAndFinish()
                     return@launch
                 }
 
-                // 3초 간격, 최대 200회 = 10분
                 Log.d(TAG, "3-3. 폴링 시작 | jobId=$jobId")
-                repeat(200) { attempt ->
-                    delay(3000)
-                    val resultResponse = RetrofitClient.authApi.getAiPhotoResult(signupToken, jobId)
-                    val result = resultResponse.body()?.data
-                    Log.d(TAG, "3-3. 폴링 ${attempt + 1}회 | status=${result?.status}")
-                    if (attempt == 0) Log.d("RAW", "poll#1: ${Gson().toJson(resultResponse.body())}")
+                val result = pollUntilComplete(signupToken, jobId)
 
-                    if (result?.status == "DONE") {
-                        Log.d(TAG, "3-3. AI 생성 완료! avatarImageUrl=${result.avatarImageUrl}")
-                        navigateToAiProfit(result)
-                        return@launch
-                    }
+                if (result != null) {
+                    navigateToAiProfit(result)
+                } else {
+                    showErrorAndFinish()
                 }
-
-                Log.w(TAG, "3-3. 폴링 타임아웃 → AiProfitActivity로 이동")
-                navigateToAiProfit(null)
 
             } catch (e: Exception) {
                 Log.e(TAG, "3. 예외 발생: ${e.javaClass.simpleName} - ${e.message}")
-                navigateToAiProfit(null)
+                showErrorAndFinish()
             }
         }
     }
 
-    private fun navigateToAiProfit(result: AiPhotoResultDataDto?) {
-        val intent = Intent(this, AiProfitActivity::class.java).apply {
-            result?.let {
-                putExtra("avatar_image_url", it.avatarImageUrl)
-                putExtra("breed", it.breed)
-                putExtra("intro_text", it.introText)
-                putStringArrayListExtra("personality_tags", ArrayList(it.personalityTags ?: emptyList()))
+    private suspend fun pollUntilComplete(signupToken: String, jobId: String): AiPhotoResultDataDto? {
+        repeat(200) { attempt ->
+            delay(3000)
+            val resultResponse = RetrofitClient.authApi.getAiPhotoResult(signupToken, jobId)
+            val result = resultResponse.body()?.data
+            Log.d(TAG, "3-3. 폴링 ${attempt + 1}회 | status=${result?.status}")
+
+            when (result?.status) {
+                "DONE" -> {
+                    Log.d(TAG, "3-3. AI 생성 완료! avatarImageUrl=${result.avatarImageUrl}")
+                    return result
+                }
+                "FAILED" -> {
+                    Log.e(TAG, "3-3. AI 생성 실패")
+                    return null
+                }
             }
+        }
+        Log.w(TAG, "3-3. 폴링 타임아웃")
+        return null
+    }
+
+    private fun navigateToAiProfit(result: AiPhotoResultDataDto) {
+        val intent = Intent(this, AiProfitActivity::class.java).apply {
+            putExtra("avatar_image_url", result.avatarImageUrl)
+            putExtra("breed", result.breed)
+            putExtra("intro_text", result.introText)
+            putStringArrayListExtra("personality_tags", ArrayList(result.personalityTags))
         }
         startActivity(intent)
         finish()
@@ -116,13 +124,17 @@ class SplashActivity : AppCompatActivity() {
     private fun uriToMultipart(uri: Uri): MultipartBody.Part? {
         return try {
             val mimeType = contentResolver.getType(uri) ?: "image/jpeg"
-            val bytes = contentResolver.openInputStream(uri)?.readBytes()
-                ?: return null
+            val bytes = contentResolver.openInputStream(uri)?.readBytes() ?: return null
             val requestBody = bytes.toRequestBody(mimeType.toMediaType())
             MultipartBody.Part.createFormData("image", "photo.jpg", requestBody)
         } catch (e: Exception) {
             Log.e(TAG, "uriToMultipart 실패: ${e.message}")
             null
         }
+    }
+
+    private fun showErrorAndFinish() {
+        Toast.makeText(this, "AI 프로필 생성에 실패했어요. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+        finish()
     }
 }
