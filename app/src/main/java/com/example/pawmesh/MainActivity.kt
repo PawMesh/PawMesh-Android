@@ -5,10 +5,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.pawmesh.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     val TAG = "MainActivity"
-    val binding by lazy {ActivityMainBinding.inflate}
+    val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
