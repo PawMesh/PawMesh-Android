@@ -1,0 +1,256 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="32dp">
+
+        <!-- 프로필 이미지 -->
+        <FrameLayout
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="48dp">
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
+                app:srcCompat="@drawable/cc" />
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
+                app:srcCompat="@drawable/profile" />
+        </FrameLayout>
+
+        <!-- 제목 -->
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:text="덕배를 소개합니다!"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <!-- 부제목 -->
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:text="AI 캐릭터가 생성되었습니다"
+            android:textSize="14sp" />
+
+        <!-- 프로필 카드 (배경 이미지 + 내용) -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="24dp">
+
+            <!-- 카드 배경 -->
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/profile_card" />
+
+            <!-- 카드 내용 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="20dp"
+                android:paddingTop="20dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="20dp">
+
+                <!-- 견종 -->
+                <TextView
+                    android:id="@+id/tvBreedLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="견종"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/etBreed"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="4dp"
+                    android:background="#33FFFFFF"
+                    android:hint="견종을 입력해주세요"
+                    android:inputType="text"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:textSize="13sp" />
+
+                <!-- 성격 -->
+                <TextView
+                    android:id="@+id/tvPersonalityLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="성격"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupPersonality"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    app:singleSelection="false">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipFriendly"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:backgroundTint="#EFF6FF"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="친화적" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipPlayful"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:backgroundTint="#EFF6FF"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="활발함" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipGentle"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:backgroundTint="#EFF6FF"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="온순함" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipCurious"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:backgroundTint="#EFF6FF"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="낯가림" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipProtective"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:backgroundTint="#EFF6FF"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="경계심" />
+
+                    <Button
+                        android:id="@+id/tvBr"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:backgroundTint="#3384FC"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="+추가"
+                        android:textColor="@color/white"/>
+
+                </com.google.android.material.chip.ChipGroup>
+
+                <!-- 주의사항 -->
+                <TextView
+                    android:id="@+id/tvCautionLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="주의사항"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/etCaution"
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    android:layout_marginTop="4dp"
+                    android:background="#33FFFFFF"
+                    android:gravity="top"
+                    android:hint="주의사항을 입력해주세요"
+                    android:inputType="textMultiLine"
+                    android:paddingStart="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="12dp"
+                    android:textSize="13sp" />
+
+                <!-- AI 소개글 -->
+                <TextView
+                    android:id="@+id/tvAiIntroLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="AI 소개글"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvAiIntro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:background="#33FFFFFF"
+                    android:minHeight="80dp"
+                    android:paddingStart="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="8dp"
+                    android:text="AI가 생성한 소개글이 여기에 표시됩니다."
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+        </FrameLayout>
+
+        <!-- 버튼 영역 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="24dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnSelect2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:backgroundTint="#EFF6FF"
+                android:text="사진 다시 선택하기"
+                android:textColor="#1E3A8A" />
+
+            <Button
+                android:id="@+id/btnSelect1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:backgroundTint="#3384FC"
+                android:text="사진 선택하기" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

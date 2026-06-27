@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="#F0F4FF">
 
-    <!-- 프로필 제목 -->
     <TextView
         android:id="@+id/tvProfileTitle"
         android:layout_width="wrap_content"
@@ -21,7 +20,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <!-- 강아지 프로필 카드 -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutDogProfile"
         android:layout_width="0dp"
@@ -34,7 +32,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- 파란 원 배경 -->
         <ImageView
             android:id="@+id/imgDogCircle"
             android:layout_width="72dp"
@@ -43,7 +40,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/bluecircle"/>
 
-        <!-- 강아지 이미지 -->
         <ImageView
             android:id="@+id/ivDogProfile"
             android:layout_width="42dp"
@@ -54,7 +50,6 @@
             app:layout_constraintEnd_toEndOf="@id/imgDogCircle"
             app:srcCompat="@drawable/puppy_dubu"/>
 
-        <!-- 강아지 이름 -->
         <TextView
             android:id="@+id/tvDogName"
             android:layout_width="0dp"
@@ -69,7 +64,6 @@
             app:layout_constraintStart_toEndOf="@id/imgDogCircle"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <!-- 강아지 종 -->
         <TextView
             android:id="@+id/tvDogType"
             android:layout_width="0dp"
@@ -84,7 +78,7 @@
             app:layout_constraintStart_toEndOf="@id/imgDogCircle"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <!-- 성격 칩 (Fragment에서 동적으로 추가) -->
+
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chipGroupPersonality"
             android:layout_width="0dp"
@@ -92,9 +86,26 @@
             android:layout_marginTop="12dp"
             app:layout_constraintTop_toBottomOf="@id/imgDogCircle"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- 프로필 수정 버튼 -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipGentle"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#EFF6FF"
+                android:text="온순함" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipCurious"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#EFF6FF"
+                android:text="호기심많음" />
+
+        </com.google.android.material.chip.ChipGroup>
+
         <Button
             android:id="@+id/btnEditProfile"
             android:layout_width="0dp"
@@ -110,7 +121,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- 통계 카드 -->
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutStats"
         android:layout_width="0dp"
@@ -121,7 +132,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- 총 산책 횟수 카드 -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardWalkCount"
             android:layout_width="0dp"
@@ -171,7 +181,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- 친구 수 카드 -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardFriendCount"
             android:layout_width="0dp"
@@ -222,7 +231,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- 메뉴 카드 -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardMenu"
         android:layout_width="0dp"
