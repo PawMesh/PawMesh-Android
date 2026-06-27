@@ -26,9 +26,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="선택한 사진은 캐릭터를 만드는대만 사용돼요."
-            android:textSize="14sp"
-            android:paddingTop="8dp"/>
+            android:paddingTop="8dp"
+            android:text="선택한 사진은 캐릭터를 만드는 데만 사용돼요."
+            android:textSize="14sp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
