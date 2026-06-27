@@ -1,6 +1,5 @@
 package com.example.pawmesh.data.network.retrofit
 
-import com.example.pawmesh.data.network.api.ApiService
 import com.example.pawmesh.data.network.api.AuthApi
 import com.example.pawmesh.data.network.api.MapApi
 import com.example.pawmesh.data.network.api.UserApi
@@ -28,10 +27,8 @@ object RetrofitClient {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    val instance: ApiService by lazy { retrofit.create(ApiService::class.java) }
-
-    val authApi: AuthApi = retrofit.create(AuthApi::class.java)
-    val mapApi: MapApi = retrofit.create(MapApi::class.java)
-    val userApi: UserApi = retrofit.create(UserApi::class.java)
-    val walkRequestApi: WalkRequestApi = retrofit.create(WalkRequestApi::class.java)
+    val authApi: AuthApi by lazy { retrofit.create(AuthApi::class.java) }
+    val mapApi: MapApi by lazy { retrofit.create(MapApi::class.java) }
+    val userApi: UserApi by lazy { retrofit.create(UserApi::class.java) }
+    val walkRequestApi: WalkRequestApi by lazy { retrofit.create(WalkRequestApi::class.java) }
 }
