@@ -144,7 +144,7 @@
                         android:text="온순함" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chipShy"
+                        android:id="@+id/chipCurious"
                         style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:backgroundTint="#EFF6FF"
                         android:layout_width="wrap_content"
