@@ -92,7 +92,7 @@ class SplashActivity : AppCompatActivity() {
         delay(10_000) // AI 처리 시작 대기
         var failedCount = 0
 
-        repeat(60) { attempt ->
+        repeat(118) { attempt ->
             val resultResponse = RetrofitClient.authApi.getAiPhotoResult(signupToken, jobId)
             val result = resultResponse.body()?.data
             Log.d(TAG, "3-3. 폴링 ${attempt + 1}회 | status=${result?.status}")
