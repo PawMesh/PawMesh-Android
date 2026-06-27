@@ -103,54 +103,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                app:singleSelection="false">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipFriendly"
-                    style="@style/Widget.MaterialComponents.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="친화적"
-                    app:chipBackgroundColor="@color/chip_background_color"/>
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipPlayful"
-                    style="@style/Widget.MaterialComponents.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="활발함"
-                    app:chipBackgroundColor="@color/chip_background_color"/>
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipGentle"
-                    style="@style/Widget.MaterialComponents.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="온순함"
-                    app:chipBackgroundColor="@color/chip_background_color"/>
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipCurious"
-                    style="@style/Widget.MaterialComponents.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="낯가림"
-                    app:chipBackgroundColor="@color/chip_background_color"/>
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipProtective"
-                    style="@style/Widget.MaterialComponents.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="경계심"
-                    app:chipBackgroundColor="@color/chip_background_color"/>
-
-            </com.google.android.material.chip.ChipGroup>
+                app:singleSelection="false"/>
 
             <!-- 주의사항 -->
             <TextView
