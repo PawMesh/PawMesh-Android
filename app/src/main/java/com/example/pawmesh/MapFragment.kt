@@ -229,15 +229,18 @@ class MapFragment : Fragment() {
     private fun addFriendMarkers(sessions: List<NearbySessionDto>) {
         val map = kakaoMap ?: return
         val layer = map.labelManager?.layer ?: return
+
+        val bitmap = viewToBitmap(R.layout.marker_friend_dog)
+        val styles = map.labelManager!!.addLabelStyles(LabelStyles.from(LabelStyle.from(bitmap)))
+
         clearFriendMarkers()
 
         Log.d(TAG, "addFriendMarkers: ${sessions.size}개")
         sessions.forEach { session ->
             val lat = session.lat ?: return@forEach
             val lng = session.lng ?: return@forEach
-            val bitmap = viewToBitmap(R.layout.marker_friend_dog)
-            val styles = map.labelManager!!.addLabelStyles(LabelStyles.from(LabelStyle.from(bitmap)))
             val labelId = "friend_${session.dogId}"
+
             layer.addLabel(LabelOptions.from(labelId, LatLng.from(lat, lng)).setStyles(styles))
             friendLabelIds.add(labelId)
             sessionMap[labelId] = session
