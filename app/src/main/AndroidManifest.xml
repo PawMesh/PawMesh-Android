@@ -17,6 +17,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PawMesh">
 
+
+        <!-- 카카오맵 API 키 추가 -->
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="247cb7d9cc222265ce4b4d11a6b410f1" />
+
         <activity
             android:name=".StartActivity"
             android:exported="true">
